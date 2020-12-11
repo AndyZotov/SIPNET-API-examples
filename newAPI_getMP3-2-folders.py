@@ -15,31 +15,34 @@ Maxgetfiles = 8000
 Maxgetinit = 8000
 
 # Определим дефолт на дату скачивания записей.
-# ListDate = '25.11.2020'
-ListDate = yesterday.strftime('%d.%m.%Y')
+# CurrentDate = '25.11.2020'
+CurrentDate = yesterday.strftime('%d.%m.%Y')
 
 
 # Если есть параметры, перекроем дефолт заданными значениями
 if len (sys.argv) == 2: 
-   ListDate = sys.argv[1]
+   CurrentDate = sys.argv[1]
 
 if len (sys.argv) == 3: 
-   ListDate = sys.argv[1]
+   CurrentDate = sys.argv[1]
    Maxgetfiles = int(sys.argv[2])
    Maxgetinit = int(sys.argv[2])
 
 # Список дочерних по которым нужны записи. Если дочек нет, указываем один основной аккаунт
 managers = {'manage4', 'manage2', 'manage16', 'manage10', 'manage15', 'manage17', 'manage1', 'manage5'}
 
+# Префикс имени главной дирректории, можно пустую строку, или имя аккаунта или любую допустимую для имени дирретории строку
+DirPrefix="My_dir_name_prefix_"
+
 # Создадим дирректории в которые положим файлы
 try: 
-    os.mkdir(ListDate) 
+    os.mkdir(DirPrefix + CurrentDate) 
 except OSError as error: 
     print(error) 
 
 for path in managers:
     try:
-       os.mkdir( ListDate+'/'+path)
+       os.mkdir( DirPrefix + CurrentDate+'/'+path)
     except OSError as error:
        print(error) 
     print ("Успешно создали директорию", path )
@@ -53,8 +56,8 @@ payload = {'operation': 'calls',      # Метод который возвращ
            'login': '<data>',         # Указать логин аккаунта SIPNET. 
            'password': '<data>',      # Указать пароль аккаунта SIPNET.
            'showchild': '1',          # Если указан 1 то получим данные основного и дочерних аккаунтов.
-           'D1': ListDate,            # Если не правильная дата, то сегодня
-           'D2': ListDate,            # Если не правильная дата, то сегодня
+           'D1': CurrentDate,            # Если не правильная дата, то сегодня
+           'D2': CurrentDate,            # Если не правильная дата, то сегодня
            'format': 'json'           # Это формат возвращаемых данных. Нам очень Json понравился
            }
 
@@ -105,7 +108,7 @@ if response.status_code == requests.codes.ok:
                                 FileName = FileName+".zip"
                             FileName = FileName.replace('/', '-').replace(':', '-')
                             # Сохраняем скаченый файл с нужным именем.
-                            with open(ListDate+'/'+i["Account"]+'/'+FileName, 'wb') as out_file:
+                            with open(DirPrefix + CurrentDate+'/'+i["Account"]+'/'+FileName, 'wb') as out_file:
                                 shutil.copyfileobj(response.raw, out_file)
                             del response
                             Maxgetfiles -= 1

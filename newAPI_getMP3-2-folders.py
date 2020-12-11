@@ -28,8 +28,16 @@ if len (sys.argv) == 3:
    Maxgetfiles = int(sys.argv[2])
    Maxgetinit = int(sys.argv[2])
 
-# Список дочерних по которым нужны записи. Если дочек нет, указываем один основной аккаунт
-managers = {'manage4', 'manage2', 'manage16', 'manage10', 'manage15', 'manage17', 'manage1', 'manage5'}
+# Список дочерних по которым нужны записи и имена менеджеров, связанные с дочерними.
+NewManagers = {'manage1': "Алексей", 
+               'manage2': "Валентин", 
+               'manage4': "Кристина", 
+               'manage5': "Карина", 
+               'manage10': "Наталья", 
+               'manage15': "Олеся", 
+               'manage16': "Алина", 
+               'manage17': "Анастасия"
+               }
 
 # Префикс имени главной дирректории, можно пустую строку, или имя аккаунта или любую допустимую для имени дирретории строку
 DirPrefix="My_dir_name_prefix_"
@@ -40,9 +48,9 @@ try:
 except OSError as error: 
     print(error) 
 
-for path in managers:
+for path in NewManagers.keys():
     try:
-       os.mkdir( DirPrefix + CurrentDate+'/'+path)
+       os.mkdir( DirPrefix + CurrentDate+'/'+NewManagers[path])
     except OSError as error:
        print(error) 
     print ("Успешно создали директорию", path )
@@ -95,12 +103,12 @@ if response.status_code == requests.codes.ok:
                     # Обнаружен URL файла с записью разговора.
                     print (i["URL"])
                     # Проверяем, не исчерпан ли лимит скачивания файлов
-                    if Maxgetfiles>0 and i["Account"] in managers:
+                    if Maxgetfiles>0 and i["Account"] in NewManagers.keys():
                        # Скачаем и сохраним все обнаруженные записи имя сохраненного файла состоит из cid звонка.
                         response = requests.get(i["URL"]+"&r=1", stream=True)
                         if response.status_code == requests.codes.ok:
                             # Тут мы формируем имя файла записи разговора
-                            FileName = i["Account"]+"_"+i["GMT"]+"_"+i["CLI"]+"_"+i["Phone"]+"_"+i['Direction']
+                            FileName = NewManagers[i["Account"]]+"_"+i["GMT"]+"_"+i["CLI"]+"_"+i["Phone"]+"_"+i['Direction']
                             # Определяем тип скаченого файла и выбираем нужное расширение имени файла
                             if response.headers['Content-Type'] == 'audio/mpeg':
                                 FileName = FileName+".mp3"
@@ -108,7 +116,7 @@ if response.status_code == requests.codes.ok:
                                 FileName = FileName+".zip"
                             FileName = FileName.replace('/', '-').replace(':', '-')
                             # Сохраняем скаченый файл с нужным именем.
-                            with open(DirPrefix + CurrentDate+'/'+i["Account"]+'/'+FileName, 'wb') as out_file:
+                            with open(DirPrefix + CurrentDate+'/'+NewManagers[i["Account"]]+'/'+FileName, 'wb') as out_file:
                                 shutil.copyfileobj(response.raw, out_file)
                             del response
                             Maxgetfiles -= 1

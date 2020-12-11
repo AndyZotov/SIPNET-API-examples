@@ -15,16 +15,16 @@ Maxgetfiles = 8000
 Maxgetinit = 8000
 
 # Определим дефолт на дату скачивания записей.
-# ListDate = '25.11.2020'
-ListDate = yesterday.strftime('%d.%m.%Y')
+# CurrentDate = '25.11.2020'
+CurrentDate = yesterday.strftime('%d.%m.%Y')
 
 
 # Если есть параметры, перекроем дефолт заданными значениями
 if len (sys.argv) == 2: 
-   ListDate = sys.argv[1]
+   CurrentDate = sys.argv[1]
 
 if len (sys.argv) == 3: 
-   ListDate = sys.argv[1]
+   CurrentDate = sys.argv[1]
    Maxgetfiles = int(sys.argv[2])
    Maxgetinit = int(sys.argv[2])
 
@@ -37,8 +37,8 @@ payload = {'operation': 'attempts',   # Метод который возвращ
            'login': '<data>',         # Указать логин аккаунта SIPNET. 
            'password': '<data>',      # Указать пароль аккаунта SIPNET.
            'showchild': '0',          # Если указан 1 то получим данные основного и дочерних аккаунтов.
-           'D1': ListDate,        # Если не правильная дата, то сегодня
-           'D2': ListDate,        # Если не правильная дата, то сегодня
+           'D1': CurrentDate,        # Если не правильная дата, то сегодня
+           'D2': CurrentDate,        # Если не правильная дата, то сегодня
            'format': 'json'           # Это формат возвращаемых данных. Нам очень Json понравился
            }
 

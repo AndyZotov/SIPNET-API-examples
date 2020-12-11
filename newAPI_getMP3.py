@@ -15,16 +15,16 @@ Maxgetfiles = 8000
 Maxgetinit = 8000
 
 # Определим дефолт на дату скачивания записей.
-# ListDate = '25.11.2020'
-ListDate = yesterday.strftime('%d.%m.%Y')
+# CurrentDate = '25.11.2020'
+CurrentDate = yesterday.strftime('%d.%m.%Y')
 
 
 # Если есть параметры, перекроем дефолт заданными значениями
 if len (sys.argv) == 2: 
-   ListDate = sys.argv[1]
+   CurrentDate = sys.argv[1]
 
 if len (sys.argv) == 3: 
-   ListDate = sys.argv[1]
+   CurrentDate = sys.argv[1]
    Maxgetfiles = int(sys.argv[2])
    Maxgetinit = int(sys.argv[2])
 
